@@ -51,7 +51,7 @@ def sample_function(user_train, usernum, itemnum, batch_size, maxlen, result_que
             idx -= 1
             if idx == -1: break
 
-        return (uid, seq, pos, neg)
+        return (uid, seq, pos, neg) #dim = 1
 
     np.random.seed(SEED)
     uids = np.arange(1, usernum+1, dtype=np.int32)

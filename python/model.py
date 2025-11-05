@@ -63,7 +63,7 @@ class SASRec(torch.nn.Module):
             # self.neg_sigmoid = torch.nn.Sigmoid()
 
     def log2feats(self, log_seqs): # TODO: fp64 and int64 as default in python, trim?
-        seqs = self.item_emb(torch.LongTensor(log_seqs).to(self.dev))
+        seqs = self.item_emb(torch.LongTensor(log_seqs).to(self.dev))  #log [len]
         seqs *= self.item_emb.embedding_dim ** 0.5
         poss = np.tile(np.arange(1, log_seqs.shape[1] + 1), [log_seqs.shape[0], 1])
         # TODO: directly do tensor = torch.arange(1, xxx, device='cuda') to save extra overheads
@@ -90,9 +90,9 @@ class SASRec(torch.nn.Module):
                 seqs = torch.transpose(seqs, 0, 1)
                 seqs = self.forward_layernorms[i](seqs + self.forward_layers[i](seqs))
 
-        log_feats = self.last_layernorm(seqs) # (U, T, C) -> (U, -1, C)
+        log_feats = self.last_layernorm(seqs)
 
-        return log_feats
+        return log_feats #c,l
 
     def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs): # for training        
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
